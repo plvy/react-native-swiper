@@ -91,7 +91,8 @@ const styles = {
 
   buttonText: {
     fontSize: 50,
-    color: '#007aff'
+    color: '#007aff',
+    fontFamily: 'Arial'
   }
 }
 
@@ -251,10 +252,18 @@ export default class extends Component {
       initState.height = height;
     }
 
+    // since defaultProps of index is 0
+    // when nextProps didnt contain index, initial offset would be { 0, 0 }
     initState.offset[initState.dir] = initState.dir === 'y'
-      ? height * props.index
-      : width * props.index
+      ? initState.height * initState.index
+      : initState.width * initState.index;
 
+    // fix render last page first when loop = true
+    if (props.loop) {
+      initState.offset[initState.dir] = initState.dir === 'y'
+        ? initState.height * (initState.index + 1)
+        : initState.width * (initState.index + 1);
+    }
 
     this.internals = {
       ...this.internals,
